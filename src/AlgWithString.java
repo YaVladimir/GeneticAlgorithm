@@ -59,8 +59,8 @@ public class AlgWithString {
         }
     }
 
-    private static double function(double x, double y) {
-        return Math.pow((x - 3), 2) + Math.pow((y - 1), 2) * Math.abs(Math.cos(x));
+    private static float function(float x, float y) {
+        return (float) (Math.pow((x - 3), 2) + Math.pow((y - 1), 2) * Math.abs(Math.cos(x)));
         //return Math.pow(x, 2) + Math.pow(y, 2);
     }
 
@@ -120,7 +120,7 @@ public class AlgWithString {
                 }
                 selection[i].personX = selection[i].personX.substring(0, n) + buffer.toString()
                         + selection[i].personX.substring(k, num);
-                probMutation = Math.random();
+//                probMutation = Math.random();
                 num = selection[i].getLengthPersonY();
 //                if (probMutation > specProbMut) {
                 n = (int) (Math.random() * 22);
@@ -235,20 +235,20 @@ public class AlgWithString {
     }
 
     public static void main(String[] args) {
-        double eps = 0.0000001;
+        float eps = 0.0001f;
         int maxIter = 100000;
         int i = 0;
         int counter = 0;
 
         int numPerson = 100;
-        int numTour = 40;
-        float specProbMut = 0.4f;
+        int numTour = 20;
+        float specProbMut = 0.1f;
         float specProbCross = 0.5f;
 
         AlgWithString algWithString = new AlgWithString(numPerson, numTour, specProbMut, specProbCross);
 
         Selection sel0 = algWithString.selection[0];
-        Selection sel1 = null;
+        Selection sel1;
 
         while (i < maxIter) {
             sel1 = algWithString.minSelection();
@@ -263,19 +263,22 @@ public class AlgWithString {
 
             if (Math.abs(AlgWithString.function(AlgWithString.getFloat32(sel1.personX),
                     AlgWithString.getFloat32(sel1.personY))
-                    - AlgWithString.function(AlgWithString.getFloat32(sel0.personX),
-                    AlgWithString.getFloat32(sel0.personY))) < eps) {
+                   /* - AlgWithString.function(AlgWithString.getFloat32(sel0.personX),
+                    AlgWithString.getFloat32(sel0.personY))*/) < eps) {
                 counter++;
             } else
                 counter = 0;
 
-            if (counter == 10) {
+            if (counter == 5) {
                 break;
             }
-            sel0 = sel1;
-            algWithString.tournament();
+
+            sel0.personX = sel1.personX;
+            sel0.personY = sel1.personY;
+
             algWithString.cross();
             algWithString.mutation();
+            algWithString.tournament();
             i++;
         }
     }
